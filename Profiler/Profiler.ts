@@ -79,10 +79,10 @@ function wrapFunction(obj: object, key: PropertyKey, className?: string) {
   if (!className) {
     className = obj.constructor ? `${obj.constructor.name}` : "";
   }
-  const memKey = className + `:${key}`;
+  const memKey = className + `:${key.toString()}`;
 
   // set a tag so we don't wrap a function twice
-  const savedName = `__${key}__`;
+  const savedName = `__${key.toString()}__`;
   if (Reflect.has(obj, savedName)) {
     return;
   }
@@ -138,14 +138,14 @@ function isEnabled(): boolean {
 }
 
 function record(key: string | symbol, time: number) {
-  if (!Memory.profiler.data[key]) {
-    Memory.profiler.data[key] = {
+  if (!Memory.profiler.data[key.toString()]) {
+    Memory.profiler.data[key.toString()] = {
       calls: 0,
       time: 0
     };
   }
-  Memory.profiler.data[key].calls++;
-  Memory.profiler.data[key].time += time;
+  Memory.profiler.data[key.toString()].calls++;
+  Memory.profiler.data[key.toString()].time += time;
 }
 
 interface OutputData {
@@ -169,10 +169,10 @@ function outputProfilerData() {
   let time: number;
   let result: Partial<OutputData>;
   const data = Reflect.ownKeys(Memory.profiler.data).map(key => {
-    calls = Memory.profiler.data[key].calls;
-    time = Memory.profiler.data[key].time;
+    calls = Memory.profiler.data[key.toString()].calls;
+    time = Memory.profiler.data[key.toString()].time;
     result = {};
-    result.name = `${key}`;
+    result.name = `${key.toString()}`;
     result.calls = calls;
     result.cpuPerCall = time / calls;
     result.callsPerTick = calls / totalTicks;
